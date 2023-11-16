@@ -41,10 +41,10 @@ const listKeys = async (name, flowKey) => {
                             page: page.displayName,
                             type: 'Actions',
                             key: action.value.stringValue,
-                            module_key: flowKey,
-                            page_key: page_key,
+                            // module_key: flowKey,
+                            // page_key: page_key,
                         });
-                        console.log(`${no} | ${page.displayName} | Action | ${action.parameter}: ${action.value.stringValue}`);
+                        // console.log(`${no} | ${page.displayName} | Action | ${action.parameter}: ${action.value.stringValue}`);
                         no++;
                     }
                 });
@@ -58,10 +58,10 @@ const listKeys = async (name, flowKey) => {
                                 page: page.displayName,
                                 type: 'Reprompt',
                                 key: aksyon.value.stringValue,
-                                module_key: flowKey,
-                                page_key: page_key,
+                                // module_key: flowKey,
+                                // page_key: page_key,
                             });
-                            console.log(`${no} | ${page.displayName} | Reprompt | ${aksyon.parameter}: ${aksyon.value.stringValue}`);
+                            // console.log(`${no} | ${page.displayName} | Reprompt | ${aksyon.parameter}: ${aksyon.value.stringValue}`);
                             no++;
                         }
                     })
@@ -81,10 +81,10 @@ const listKeys = async (name, flowKey) => {
                         page: page.displayName,
                         type: 'Routes',
                         key: acshon.value.stringValue,
-                        module_key: flowKey,
-                        page_key: page_key,
+                        // module_key: flowKey,
+                        // page_key: page_key,
                     });
-                    console.log(`${no} | ${page.displayName} | Routes | ${acshon.parameter}: ${acshon.value.stringValue}`);
+                    // console.log(`${no} | ${page.displayName} | Routes | ${acshon.parameter}: ${acshon.value.stringValue}`);
                     no++
                 }
             });
@@ -110,12 +110,18 @@ const keys = [];
 await listFlows(keys);
 
 // Find Response Keys
-for (let i = 0; i < keys.length; i++) {
-    await listKeys(keys[i].name, keys[i].id);
-};
+const requests = [];
+
+keys.forEach(key => {
+    requests.push(listKeys(key.name, key.id));
+});
+
+await Promise.all(requests);
 
 // Write
 const workbook = XLSX.utils.json_to_sheet(data);
 const new_book = XLSX.utils.book_new()
 XLSX.utils.book_append_sheet(new_book, workbook, 'keys')
 XLSX.writeFile(new_book, 'Keys.xlsx');
+
+
